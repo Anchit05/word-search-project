@@ -127,7 +127,7 @@ gulp.task('fonts', function () {
       .pipe($.size());
 });
 
-gulp.task('build', ['html', 'images', 'fonts']);
+gulp.task('build', ['html', 'images', 'fonts', 'styles']);
 
 
 gulp.task('default', ['clean', 'clear'], function () {
