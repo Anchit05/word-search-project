@@ -1,0 +1,35 @@
+@import "variable.scss";
+
+@font-face {
+	font-family: 'Dosis Regular';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Dosis Regular'), local('Dosis-Regular'), url('fonts/Dosis-Regular.tff') format('tff');
+}
+
+@font-face {
+	font-family: 'Dosis Bold';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Dosis Bold'), local('Dosis-Bold'), url('fonts/Dosis-Bold.tff') format('tff');
+}
+
+
+body {
+	font-family: 'Dosis Regular' !important;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px $grey; 
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px $grey; 
+    background-color: $grey;
+}

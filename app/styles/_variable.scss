@@ -1,0 +1,54 @@
+$white: #fff;
+$black: #000;
+$pink: #e93691;
+$primary_blue: #003f77;
+$primary_light_blue: #4f8abe;
+$primary_yellow: #fcd116;
+$light_blue: #d4e9fa;
+$grey: #e6e6e6;
+$light_yellow: #fef0c2;
+$red: #ee2726;
+$orange: #f58f2b;
+$light_orange: #fcb711;
+$lighter_orange: #fcd116;
+$light_green: #adcb37;
+$green: #26b45d
+
+$zindex-navmenu-fixed:     1030 !default;
+$zindex-alert-fixed:       1035 !default;
+
+$container-smooth:         $container-lg !default;
+
+$alert-fixed-width:        $screen-md-min !default;
+
+$atmosphere-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+
+//========================================================= Navmenu
+
+// Basics of a navmenu
+$navmenu-width:                     300px !default;
+$navmenu-margin-vertical:           (0.5 * $line-height-computed) !default;
+$navmenu-default-color:             #777 !default;
+$navmenu-default-bg:                #f8f8f8 !default;
+$navmenu-default-border:            darken($navmenu-default-bg, 6.5%) !default;
+
+// Navmenu links
+$navmenu-default-link-color:                #777 !default;
+$navmenu-default-link-hover-color:          #333 !default;
+$navmenu-default-link-hover-bg:             transparent !default;
+$navmenu-default-link-active-color:         #555 !default;
+$navmenu-default-link-active-bg:            darken($navmenu-default-bg, 6.5%) !default;
+$navmenu-default-link-disabled-color:       #ccc !default;
+$navmenu-default-link-disabled-bg:          transparent !default;
+
+// Navmenu brand label
+$navmenu-default-brand-color:               $navmenu-default-link-color !default;
+$navmenu-default-brand-hover-color:         darken($navmenu-default-link-color, 10%) !default;
+$navmenu-default-brand-hover-bg:            transparent !default;
+
+
+//========================================================= Navbar
+$navbar-bgcolor: #f8f8f8;
+
+
