@@ -1,37 +1,42 @@
 <!doctype html>
 <html ng-app="nextitDashboardApp">
 
-<head>
-    <meta charset="utf-8" />
-    <title>Homebell Assignment</title>
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" href="favicon.ico" />
+    <head>
+        <meta charset="utf-8" />
+        <title>Homebell Assignment</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="shortcut icon" href="favicon.ico" />
 
-    <!-- build:css styles/vendor.css -->
-    <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.css" />
-    <!-- endbuild -->
+        <!-- build:css styles/vendor.css -->
+        <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.css" />
+        <!-- endbuild -->
 
-    <!-- build:css styles/main.css -->
-    <!-- endbuild -->
-</head>
+        <!-- build:css styles/main.css -->
+        <!-- endbuild -->
+    </head>
 
-<body class="container" >
-    <!-- build:js scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="libs/jquery/dist/jquery.js"></script>
-    <script src="libs/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="libs/highcharts/highcharts.js"></script>
-    <script src="libs/highcharts/highcharts-more.js"></script>
-    <script src="libs/highcharts/modules/exporting.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
-    <div>testing</div>
+    <body class="container" >
+        <div>
+            <h3>Upload a text file</h3>
+            <input type="file" id="openfile">
+            <p>The file will be shown below:</p>
+            <div id="fileContent"></div>
+        </div>
+        <!-- build:js scripts/vendor.js -->
+        <!-- bower:js -->
+        <script src="libs/jquery/dist/jquery.js"></script>
+        <script src="libs/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="libs/highcharts/highcharts.js"></script>
+        <script src="libs/highcharts/highcharts-more.js"></script>
+        <script src="libs/highcharts/modules/exporting.js"></script>
+        <!-- endbower -->
+        <!-- endbuild -->
 
-    <!-- build:js scripts/main.js -->
-    <script src="js/app.js"></script>
-    <!-- endbuild -->
+        <!-- build:js scripts/main.js -->
+        <script src="js/app.js"></script>
+        <!-- endbuild -->
 
-</body>
+    </body>
 
 </html>
