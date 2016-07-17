@@ -6,7 +6,12 @@
   	#uploadFile {
 		width: 87%;
     	margin-bottom: 15px;
-  	}
+  	} 
+    
+    .v-report li {
+        width: 200px;
+        font-size: 15px;
+    }
 }
 
 @media screen 
@@ -18,4 +23,8 @@
 		width: 87%;
     	margin-bottom: 15px;
   	}
+    .v-report li {
+        width: 200px;
+        font-size: 15px;
+    }
 }

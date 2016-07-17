@@ -43,13 +43,44 @@ input {
 .chart-container {
   width: 100%;
   min-height: 500px;
-  display: none; }
+  display: none;
+  margin-top: 55px; }
+
+.chart-options {
+  top: 75%;
+  min-width: 144px;
+  left: 4px; }
+
+.v-report {
+  list-style: none; }
+
+.v-report li {
+  float: left;
+  font-size: 25px;
+  border: black 1px solid;
+  padding: 10px;
+  width: 300px;
+  text-align: center; }
+
+.v-report li span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block; }
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
   #uploadFile {
     width: 87%;
-    margin-bottom: 15px; } }
+    margin-bottom: 15px; }
+
+  .v-report li {
+    width: 200px;
+    font-size: 15px; } }
 @media screen and (device-width: 320px) and (device-height: 640px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) {
   #uploadFile {
     width: 87%;
-    margin-bottom: 15px; } }
+    margin-bottom: 15px; }
+
+  .v-report li {
+    width: 200px;
+    font-size: 15px; } }

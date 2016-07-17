@@ -1,11 +1,28 @@
 var d = document,
-finalData = [];
+    similarCount = 0,
+    finalData = [],
+    similarMap = {},
+    countingSimilarWords = {};
 
+// get data from similar.json and create map of it
+$.getJSON( "/js/similar.json", function( data ) {
+    var items = [];
+    $.each( data, function( key, val ) {
+        items.push(val);
+        for (var i=0; i< val.length; i++) {
+            similarMap[val[i]] = val[0];
+        }
+    });
+    console.log("Map: ",similarMap);
+});
+
+// take details from file when it is uploaded
 d.getElementById("uploadBtn").onchange = function () {
-	d.getElementById("uploadFile").value = this.value;
-	var fr = new FileReader();
+    d.getElementById("uploadFile").value = this.value;
+    var fr = new FileReader();
     console.log("file Obj: ", fr);
     fr.onload = function() {
+        countingSimilarWords = {};
         var ifEmpty = $("input[type='file']").filter(function (){
             return !this.value
         }).length;
@@ -14,7 +31,7 @@ d.getElementById("uploadBtn").onchange = function () {
         } else {
             var arr = [];
             arr = this.result.replace( /\n/g, " " );
-            arr = arr.replace(/[!@#$%^&*,.:>{<}()]/g, "" ).split( " " ); //to ignore special characters in file
+            arr = arr.replace(/[=-_%+|?\/;"!@#$%^&*,.:>{<}()0-9]/g, "" ).split( " " ); //to ignore special characters in file
             console.log("array: ", arr);
             console.log("this.result: ", this.result);
             var ignoreWords = wordsToIgnore();
@@ -22,72 +39,77 @@ d.getElementById("uploadBtn").onchange = function () {
         }
     }
     fr.readAsText(this.files[0]);
-	if (this.value) {
-		$('.report-option').prop("disabled", false);
-		$('#gen_report_btn-id').prop("disabled", false);
-	}
+    if (this.value) {
+        $('.report-option').prop("disabled", false);
+        $('#gen_report_btn-id').prop("disabled", false);
+    }
 };
 
 function clearUpload () {
-	d.getElementById("uploadFile").value = "";
+    d.getElementById("uploadFile").value = "";
     finalData = [];
-	$('.report-option').prop("disabled", true);
-	$('#gen_report_btn-id').prop("disabled", true);
+    $('.report-option').prop("disabled", true);
+    $('#gen_report_btn-id').prop("disabled", true);
 };
 
+// for generating reports of pie, bar and visual
 function generateReport() {
-	var chartType = $('.report-option')[0].innerText,
-	data;
-	//console.log("chartType", chartType);
-	chartType = chartType.trim();
-	if (chartType === "Pie Chart") {
-		$('#pie_chart').css("display", "block");
-		$('#bar_chart').css("display", "none");
-		$('#visual_chart').css("display", "none");
-		data = createDataForCharts(finalData, "pie");
-		drawPieChart(data);
-	} else if (chartType === "Bar Chart") {
-		$('#bar_chart').css("display", "block");
-		$('#pie_chart').css("display", "none");
-		$('#visual_chart').css("display", "none");
-		data = createDataForCharts(finalData, "bar");
-		drawBarChart(data);
-	} else {
-		$('#visual_report').css("display", "block");
-		$('#pie_chart').css("display", "none");
-		$('#bar_chart').css("display", "none");
-		drawVisualReport(data);
-	}
+    var chartType = $('.report-option')[0].innerText,
+        data;
+    chartType = chartType.trim();
+    if (chartType === "Pie Chart") {
+        $('#pie_chart').css("display", "block");
+        $('#bar_chart').css("display", "none");
+        $('#visual_report').css("display", "none");
+        data = createDataForCharts(finalData, "pie");
+        drawPieChart(data);
+    } else if (chartType === "Bar Chart") {
+        $('#bar_chart').css("display", "block");
+        $('#pie_chart').css("display", "none");
+        $('#visual_report').css("display", "none");
+        data = createDataForCharts(finalData, "bar");
+        drawBarChart(data);
+    } else if (chartType === "Visual Report") {
+        $('#visual_report').css("display", "block");
+        $('#pie_chart').css("display", "none");
+        $('#bar_chart').css("display", "none");
+        drawVisualReport(countingSimilarWords);
+    } else {
+        alert("Select valid report type");
+    }
 };
 
+//parse data according to charts necessity
 function createDataForCharts(data, type) {
-	var i, chartData = {xData: [], yData: []}, pieChartData = [];
-	if (type === "pie") {
-		for (i = 0; i < data.length; i++) {
-			if (data[i][1] > 2) {
-				pieChartData.push(data[i]);
-			}
-		}
-		return pieChartData;
-	} else {
-		for (i = 0; i < data.length; i++) {
-			chartData.xData.push(data[i][0]);
-			chartData.yData.push(data[i][1]);
-		}
-		return chartData;
-	}
+    var i, chartData = {xData: [], yData: []}, pieChartData = [];
+    if (type === "pie") {
+        for (i = 0; i < data.length; i++) {
+            if (data[i][1] > 2) {
+                pieChartData.push(data[i]);
+            }
+        }
+        return pieChartData;
+    } else {
+        for (i = 0; i < data.length; i++) {
+            chartData.xData.push(data[i][0]);
+            chartData.yData.push(data[i][1]);
+        }
+        return chartData;
+    }
 };
 
+// update the selected field in dropdown
 $(".dropdown-menu li a").click(function(){
-	var target = $(this).html();
-	$(this).parents('.dropdown-menu').find('li').removeClass('active');
+    var target = $(this).html();
+    $(this).parents('.dropdown-menu').find('li').removeClass('active');
     $(this).parent('li').addClass('active');
-   	$(this).parents('#generate_report_id').find('.dropdown-toggle')
-   		.html(target + ' <span class="caret"></span>');
+    $(this).parents('#generate_report_id').find('.dropdown-toggle')
+        .html(target + ' <span class="caret"></span>');
 });
 
+// for drawing BAR chart
 function drawBarChart(data) {
-	$('#bar_chart').highcharts({
+    $('#bar_chart').highcharts({
         chart: {
             type: 'bar',
             inverted: true
@@ -98,6 +120,15 @@ function drawBarChart(data) {
         },
         xAxis: {
             categories: data.xData,
+            labels: {
+                formatter: function() {
+                    var custLabel = this.value;
+                    if (this.value.length > 10) {
+                        custLabel = this.value.toString().substring(0, 10)+"..."
+                    }
+                    return custLabel;
+                }
+            }
         },
         yAxis: {
             title: {
@@ -105,8 +136,8 @@ function drawBarChart(data) {
             }
         },
         series: [{
-        	name: "count",
-        	data: data.yData,
+            name: "count",
+            data: data.yData,
             dataLabels: {
                 enabled: true
             }
@@ -114,13 +145,14 @@ function drawBarChart(data) {
     });
 };
 
+// for drawing PIE chart
 function drawPieChart(data) {
     if (!data.length) {
         $('#pie_chart').html('<h3>Your data does not have any word with frequency more than 2</h3>')
         return;
     }
-	console.log("pie chart", data);
-	$('#pie_chart').highcharts({
+    console.log("pie chart", data);
+    $('#pie_chart').highcharts({
         chart: {
             type: 'pie',
             options3d: {
@@ -151,8 +183,24 @@ function drawPieChart(data) {
     });
 };
 
+// for drawing Visual Report
 function drawVisualReport(data) {
-	console.log("visual chart", data);
+    if (Object.keys(data).length === 0) {
+        $('#visual_report').html('<h3>Your data does not have similar words</h3>')
+        return;
+    }
+    var classname,
+        liTemplate = "",
+        template;
+    for (var word in data) {
+        console.log(word);
+        classname = getIcon();
+        liTemplate = liTemplate + "<li><i class='" + classname + "'></i>" +
+            "<p>" + data[word].count + "</p>" + 
+            "<span>" + Object.keys(data[word].words).join('/') + "</span>";
+    }
+    template = "<ul class='v-report'>" + liTemplate + "</ul>";
+    $("#visual_report").html(template);
 };
 
 function Trie() {
@@ -161,6 +209,7 @@ function Trie() {
     this.children = [];
 };
 
+//function for inserting and counting words in trie tree
 Trie.prototype = {
     insert: function(str, pos) {
         if(str.length == 0) { //blank string cannot be inserted
@@ -209,7 +258,8 @@ Trie.prototype = {
         }
         return ret;
     }
-}
+};
+
 // To sort the map in descending order
 function sortFrequencyMap(wordsFrequency) {
     var sortable = [];
@@ -222,27 +272,58 @@ function sortFrequencyMap(wordsFrequency) {
         }
     )
     return sortable;
-}
+};
 //Words That should be ignore
 function wordsToIgnore() {
     var arr = ["a", "an", "and", "as", "be", "can", "for", "has", "he", "him", "his", "i", "if", "in", "is", "it", "me", "mine", "of", "on", "that", "the", "this", "to", "with", "you", "your", "yours", "was", "been"];
     return arr;
 };
+
+function checkSimilarWords(str,word) {
+    var count = 0;
+    if (countingSimilarWords[str]) {
+        count = countingSimilarWords[str].count;
+        count = count + 1;
+        countingSimilarWords[str].count = count;
+        countingSimilarWords[str].words[word] = 0;
+    } else {
+        countingSimilarWords[str] = {
+            count : 1,
+            words:{}
+        }
+        countingSimilarWords[str].words[word] = 0; 
+    }
+};
+
 //Count frequency of words in file 
 function checkCount(arr,ignoreWords) {
     var count = 0,
         word,
         sortedWords,
+        similarWord,
         maxFrequencyMap = {};
     var obj = new Trie();
     for (var i=0; i<arr.length; i++) {
         word = arr[i].toLowerCase();
         if (ignoreWords.indexOf(word) === -1) {
+            if (similarMap[word]) {
+                similarWord = similarMap[word];
+                checkSimilarWords(similarWord,word);
+                console.log("aaaaaaa: ",similarWord);
+            }
             obj.insert(word);
             count = obj.countWord(word);
             maxFrequencyMap[word] = count;
         }
     }
+    console.log("Similar words: ",countingSimilarWords);
     sortedWords = sortFrequencyMap(maxFrequencyMap);
     return sortedWords;
+};
+
+function getIcon() {
+    var iconArray = icons;
+    var randIcon = Math.floor(Math.random()*(iconArray.length));
+    var classname = "fa fa-" + iconArray[randIcon];
+    return classname;
 };
