@@ -16,11 +16,9 @@ d.getElementById("uploadBtn").onchange = function () {
             arr = this.result.replace( /\n/g, " " );
             arr = arr.replace(/[!@#$%^&*,.:>{<}()]/g, "" ).split( " " ); //to ignore special characters in file
             console.log("array: ", arr);
-            //d.getElementById("fileContent").textContent = this.result;
             console.log("this.result: ", this.result);
             var ignoreWords = wordsToIgnore();
             finalData = checkCount(arr,ignoreWords);
-           // console.log("data:", checkCount(arr,ignoreWords));
         }
     }
     fr.readAsText(this.files[0]);
@@ -32,6 +30,7 @@ d.getElementById("uploadBtn").onchange = function () {
 
 function clearUpload () {
 	d.getElementById("uploadFile").value = "";
+    finalData = [];
 	$('.report-option').prop("disabled", true);
 	$('#gen_report_btn-id').prop("disabled", true);
 };
@@ -39,18 +38,20 @@ function clearUpload () {
 function generateReport() {
 	var chartType = $('.report-option')[0].innerText,
 	data;
-	console.log("chartType", chartType);
+	//console.log("chartType", chartType);
 	chartType = chartType.trim();
 	if (chartType === "Pie Chart") {
 		$('#pie_chart').css("display", "block");
 		$('#bar_chart').css("display", "none");
 		$('#visual_chart').css("display", "none");
-		drawBarChart(data);
+		data = createDataForCharts(finalData, "pie");
+		drawPieChart(data);
 	} else if (chartType === "Bar Chart") {
 		$('#bar_chart').css("display", "block");
 		$('#pie_chart').css("display", "none");
 		$('#visual_chart').css("display", "none");
-		drawPieChart(data);
+		data = createDataForCharts(finalData, "bar");
+		drawBarChart(data);
 	} else {
 		$('#visual_report').css("display", "block");
 		$('#pie_chart').css("display", "none");
@@ -59,9 +60,23 @@ function generateReport() {
 	}
 };
 
-function showHideCharts() {
-
-}
+function createDataForCharts(data, type) {
+	var i, chartData = {xData: [], yData: []}, pieChartData = [];
+	if (type === "pie") {
+		for (i = 0; i < data.length; i++) {
+			if (data[i][1] > 2) {
+				pieChartData.push(data[i]);
+			}
+		}
+		return pieChartData;
+	} else {
+		for (i = 0; i < data.length; i++) {
+			chartData.xData.push(data[i][0]);
+			chartData.yData.push(data[i][1]);
+		}
+		return chartData;
+	}
+};
 
 $(".dropdown-menu li a").click(function(){
 	var target = $(this).html();
@@ -72,15 +87,72 @@ $(".dropdown-menu li a").click(function(){
 });
 
 function drawBarChart(data) {
-	console.log("bar chart");
+	$('#bar_chart').highcharts({
+        chart: {
+            type: 'bar',
+            inverted: true
+        },
+        colors: ["#26b45d"],
+        title: {
+            text: ''
+        },
+        xAxis: {
+            categories: data.xData,
+        },
+        yAxis: {
+            title: {
+                text: 'Word Count'
+            }
+        },
+        series: [{
+        	name: "count",
+        	data: data.yData,
+            dataLabels: {
+                enabled: true
+            }
+        }]
+    });
 };
 
 function drawPieChart(data) {
-	console.log("pie chart");
+    if (!data.length) {
+        $('#pie_chart').html('<h3>Your data does not have any word with frequency more than 2</h3>')
+        return;
+    }
+	console.log("pie chart", data);
+	$('#pie_chart').highcharts({
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 45,
+                beta: 0
+            }
+        },
+        title: {
+            text: 'Distribution of keywords'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                depth: 35,
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Distribution of keywords',
+            data: data
+        }]
+    });
 };
 
 function drawVisualReport(data) {
-	console.log("visual chart");
+	console.log("visual chart", data);
 };
 
 function Trie() {
@@ -169,11 +241,8 @@ function checkCount(arr,ignoreWords) {
             obj.insert(word);
             count = obj.countWord(word);
             maxFrequencyMap[word] = count;
-            //            console.log("Count of " + word + " : " + count);
         }
     }
-//    console.log("Map of words: ",maxFrequencyMap);
     sortedWords = sortFrequencyMap(maxFrequencyMap);
     return sortedWords;
-//    console.log("sorted of words: ",sortedWords);
 };
