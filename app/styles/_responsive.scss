@@ -1,0 +1,21 @@
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+  	#uploadFile {
+		width: 87%;
+    	margin-bottom: 15px;
+  	}
+}
+
+@media screen 
+  and (device-width: 320px) 
+  and (device-height: 640px) 
+  and (-webkit-device-pixel-ratio: 2) 
+  and (orientation: portrait) {
+  	#uploadFile {
+		width: 87%;
+    	margin-bottom: 15px;
+  	}
+}
