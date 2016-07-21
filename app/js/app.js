@@ -16,6 +16,11 @@ $.getJSON( "/js/similar.json", function( data ) {
     console.log("Map: ",similarMap);
 });
 
+// when same file is uploaded with changes it will be reflected
+d.getElementById("uploadBtn").onclick = function () {
+    d.getElementById("uploadBtn").value = "";
+}
+
 // take details from file when it is uploaded
 d.getElementById("uploadBtn").onchange = function () {
     d.getElementById("uploadFile").value = this.value;
@@ -47,6 +52,7 @@ d.getElementById("uploadBtn").onchange = function () {
 
 function clearUpload () {
     d.getElementById("uploadFile").value = "";
+    d.getElementById("uploadBtn").value = "";
     finalData = [];
     $('.report-option').prop("disabled", true);
     $('#gen_report_btn-id').prop("disabled", true);
@@ -187,6 +193,7 @@ function drawPieChart(data) {
     });
 };
 
+// sort the visual data in descending order
 function sortVisualData(data) {
     var arr = [];
     for (var word in data) {
