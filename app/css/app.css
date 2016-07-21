@@ -42,7 +42,6 @@ input {
 
 .chart-container {
   width: 100%;
-  min-height: 500px;
   display: none;
   margin-top: 55px; }
 
@@ -59,7 +58,7 @@ input {
   font-size: 25px;
   border: black 1px solid;
   padding: 10px;
-  width: 300px;
+  width: 330px;
   text-align: center; }
 
 .v-report li span {

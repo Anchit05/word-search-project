@@ -31,7 +31,7 @@ d.getElementById("uploadBtn").onchange = function () {
         } else {
             var arr = [];
             arr = this.result.replace( /\n/g, " " );
-            arr = arr.replace(/[=-_%+|?\/;"!@#$%^&*,.:>{<}()0-9]/g, "" ).split( " " ); //to ignore special characters in file
+            arr = arr.replace(/[^a-zA-Z ]/g, "").split(" "); //to ignore special characters in file
             console.log("array: ", arr);
             console.log("this.result: ", this.result);
             var ignoreWords = wordsToIgnore();
@@ -91,8 +91,10 @@ function createDataForCharts(data, type) {
         return pieChartData;
     } else {
         for (i = 0; i < data.length; i++) {
-            chartData.xData.push(data[i][0]);
-            chartData.yData.push(data[i][1]);
+            if (data[i][0]) {
+                chartData.xData.push(data[i][0]);
+                chartData.yData.push(data[i][1]);    
+            }
         }
         return chartData;
     }
@@ -109,6 +111,8 @@ $(".dropdown-menu li a").click(function(){
 
 // for drawing BAR chart
 function drawBarChart(data) {
+    var containerHeight = (data.xData.length * 30)+150;
+    $('#bar_chart').height(containerHeight);
     $('#bar_chart').highcharts({
         chart: {
             type: 'bar',
@@ -183,6 +187,17 @@ function drawPieChart(data) {
     });
 };
 
+function sortVisualData(data) {
+    var arr = [];
+    for (var word in data) {
+        arr.push(data[word]);
+    }
+    var sorted = arr.sort(function(a, b) {
+        return b.count - a.count;
+    });
+    return sorted;
+}
+
 // for drawing Visual Report
 function drawVisualReport(data) {
     if (Object.keys(data).length === 0) {
@@ -191,13 +206,16 @@ function drawVisualReport(data) {
     }
     var classname,
         liTemplate = "",
-        template;
-    for (var word in data) {
+        template,
+        tempData;
+    
+    tempData = sortVisualData(data);
+    for (var word in tempData) {
         console.log(word);
         classname = getIcon();
         liTemplate = liTemplate + "<li><i class='" + classname + "'></i>" +
-            "<p>" + data[word].count + "</p>" + 
-            "<span>" + Object.keys(data[word].words).join('/') + "</span>";
+            "<p>" + tempData[word].count + "</p>" + 
+            "<span>" + Object.keys(tempData[word].words).join('/') + "</span>";
     }
     template = "<ul class='v-report'>" + liTemplate + "</ul>";
     $("#visual_report").html(template);
